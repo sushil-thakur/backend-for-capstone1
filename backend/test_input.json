@@ -1,0 +1,14 @@
+{
+  "latitude": 40.7128,
+  "longitude": -74.0060,
+  "bedrooms": 3,
+  "bathrooms": 2,
+  "sqft_living": 2000,
+  "sqft_lot": 5000,
+  "floors": 2,
+  "waterfront": 0,
+  "view": 2,
+  "condition": 3,
+  "grade": 7,
+  "yr_built": 2000
+}

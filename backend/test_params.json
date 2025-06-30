@@ -1,0 +1,12 @@
+{
+  "bounds": {
+    "minLat": -3.259,
+    "maxLat": -3.241,
+    "minLng": -64.259,
+    "maxLng": -64.241
+  },
+  "processingId": "test_123",
+  "resolution": "high",
+  "analysisType": "buildings",
+  "outputDir": "./uploads/results"
+}

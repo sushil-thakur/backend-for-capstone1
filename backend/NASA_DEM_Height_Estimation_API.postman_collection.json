@@ -1,0 +1,882 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789abc",
+		"name": "Environmental Monitoring & Real Estate Prediction API",
+		"description": "Complete API collection for environmental monitoring, building height estimation, satellite imagery fetch, and real estate price prediction with XGBoost model integration.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
+	},
+	"item": [
+		{
+			"name": "Height Estimation",
+			"item": [
+				{
+					"name": "Estimate Building Heights - Bounds",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has required fields\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('processingId');",
+									"    pm.expect(jsonData).to.have.property('results');",
+									"});",
+									"",
+									"pm.test(\"Results contain building data\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.results && jsonData.results.buildings) {",
+									"        pm.expect(jsonData.results.buildings).to.be.an('array');",
+									"    }",
+									"});",
+									"",
+									"// Store processingId for other tests",
+									"if (pm.response.json().processingId) {",
+									"    pm.environment.set('heightProcessingId', pm.response.json().processingId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coordinates\": {\n    \"bounds\": {\n      \"minLat\": 40.7480,\n      \"maxLat\": 40.7580,\n      \"minLng\": -73.9900,\n      \"maxLng\": -73.9800\n    }\n  },\n  \"userId\": \"test_user_123\",\n  \"analysisType\": \"buildings\",\n  \"resolution\": \"high\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/height/estimate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"height",
+								"estimate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Estimate Building Heights - Point + Radius",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has required fields\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('processingId');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coordinates\": {\n    \"lat\": 40.7530,\n    \"lng\": -73.9850,\n    \"radius\": 500\n  },\n  \"userId\": \"test_user_123\",\n  \"analysisType\": \"buildings\",\n  \"resolution\": \"medium\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/height/estimate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"height",
+								"estimate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Height Estimation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 202\", function () {",
+									"    pm.response.to.have.status(202);",
+									"});",
+									"",
+									"pm.test(\"Response has batch fields\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData).to.have.property('batchId');",
+									"    pm.expect(jsonData).to.have.property('results');",
+									"});",
+									"",
+									"// Store batchId for other tests",
+									"if (pm.response.json().batchId) {",
+									"    pm.environment.set('batchId', pm.response.json().batchId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"locations\": [\n    {\n      \"name\": \"Manhattan Area 1\",\n      \"bounds\": {\n        \"minLat\": 40.7480,\n        \"maxLat\": 40.7530,\n        \"minLng\": -73.9900,\n        \"maxLng\": -73.9850\n      }\n    },\n    {\n      \"name\": \"Manhattan Area 2\",\n      \"bounds\": {\n        \"minLat\": 40.7530,\n        \"maxLat\": 40.7580,\n        \"minLng\": -73.9850,\n        \"maxLng\": -73.9800\n      }\n    }\n  ],\n  \"userId\": \"test_user_123\",\n  \"analysisType\": \"buildings\",\n  \"resolution\": \"high\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/height/batch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"height",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Height Statistics",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has statistics\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('statistics');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/height/statistics?userId=test_user_123&timeframe=7days",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"height",
+								"statistics"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "test_user_123"
+								},
+								{
+									"key": "timeframe",
+									"value": "7days"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Satellite Imagery",
+			"item": [
+				{
+					"name": "Fetch Satellite Imagery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 202\", function () {",
+									"    pm.response.to.have.status(202);",
+									"});",
+									"",
+									"pm.test(\"Response has processing info\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData).to.have.property('processingId');",
+									"    pm.expect(jsonData).to.have.property('estimatedTime');",
+									"});",
+									"",
+									"// Store processingId for other tests",
+									"if (pm.response.json().processingId) {",
+									"    pm.environment.set('imageryProcessingId', pm.response.json().processingId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coordinates\": {\n    \"bounds\": {\n      \"minLat\": 40.7480,\n      \"maxLat\": 40.7580,\n      \"minLng\": -73.9900,\n      \"maxLng\": -73.9800\n    }\n  },\n  \"imageType\": \"rgb\",\n  \"resolution\": \"medium\",\n  \"dateRange\": {\n    \"start\": \"2024-01-01\",\n    \"end\": \"2024-12-31\"\n  },\n  \"cloudCover\": 20,\n  \"userId\": \"test_user_123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/imagery/fetch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"imagery",
+								"fetch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Imagery Results",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    pm.test(\"Response has result data\", function () {",
+									"        const jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('processingId');",
+									"        pm.expect(jsonData).to.have.property('status');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/imagery/results/{{imageryProcessingId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"imagery",
+								"results",
+								"{{imageryProcessingId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Imagery Sources",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has sources\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('sources');",
+									"    pm.expect(jsonData.sources).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/imagery/sources",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"imagery",
+								"sources"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Compare Imagery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has comparison data\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('comparison');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coordinates\": {\n    \"bounds\": {\n      \"minLat\": 40.7480,\n      \"maxLat\": 40.7580,\n      \"minLng\": -73.9900,\n      \"maxLng\": -73.9800\n    }\n  },\n  \"beforeDate\": \"2023-01-01\",\n  \"afterDate\": \"2024-01-01\",\n  \"analysisType\": \"change_detection\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/imagery/compare",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"imagery",
+								"compare"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Real Estate Prediction",
+			"item": [
+				{
+					"name": "Predict Property Value",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 202\", function () {",
+									"    pm.response.to.have.status(202);",
+									"});",
+									"",
+									"pm.test(\"Response has prediction info\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData).to.have.property('processingId');",
+									"    pm.expect(jsonData).to.have.property('estimatedTime');",
+									"});",
+									"",
+									"// Store processingId for result retrieval",
+									"if (pm.response.json().processingId) {",
+									"    pm.environment.set('predictionProcessingId', pm.response.json().processingId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coordinates\": {\n    \"lat\": 40.7530,\n    \"lng\": -73.9850\n  },\n  \"propertyDetails\": {\n    \"type\": \"residential\",\n    \"size\": 2500,\n    \"bedrooms\": 3,\n    \"bathrooms\": 2,\n    \"yearBuilt\": 1995,\n    \"lotSize\": 8000,\n    \"features\": [\"garage\", \"garden\", \"modernized_kitchen\"]\n  },\n  \"userId\": \"test_user_123\",\n  \"predictionType\": \"comprehensive\",\n  \"timeHorizon\": \"5years\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/predict/value",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"predict",
+								"value"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Prediction Results",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    pm.test(\"Response has prediction data\", function () {",
+									"        const jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('processingId');",
+									"        pm.expect(jsonData).to.have.property('status');",
+									"        if (jsonData.status === 'completed') {",
+									"            pm.expect(jsonData).to.have.property('prediction');",
+									"            pm.expect(jsonData.prediction).to.have.property('estimatedPrice');",
+									"        }",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/predict/results/{{predictionProcessingId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"predict",
+								"results",
+								"{{predictionProcessingId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assess Environmental Risk",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has risk assessment\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData).to.have.property('riskAssessment');",
+									"    pm.expect(jsonData.riskAssessment).to.have.property('overallRisk');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coordinates\": {\n    \"lat\": 40.7530,\n    \"lng\": -73.9850\n  },\n  \"riskRadius\": 5000,\n  \"riskTypes\": \"all\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/predict/environmental-risk",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"predict",
+								"environmental-risk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Market Trends",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has market trends\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('trends');",
+									"    pm.expect(jsonData).to.have.property('summary');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/predict/market-trends?region=all&propertyType=residential&timeframe=2years&includeEnvironmental=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"predict",
+								"market-trends"
+							],
+							"query": [
+								{
+									"key": "region",
+									"value": "all"
+								},
+								{
+									"key": "propertyType",
+									"value": "residential"
+								},
+								{
+									"key": "timeframe",
+									"value": "2years"
+								},
+								{
+									"key": "includeEnvironmental",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Investment Analysis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 202\", function () {",
+									"    pm.response.to.have.status(202);",
+									"});",
+									"",
+									"pm.test(\"Response has investment analysis info\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"    pm.expect(jsonData).to.have.property('processingId');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"properties\": [\n    {\n      \"coordinates\": { \"lat\": 40.7530, \"lng\": -73.9850 },\n      \"propertyDetails\": {\n        \"type\": \"residential\",\n        \"size\": 2500,\n        \"bedrooms\": 3,\n        \"bathrooms\": 2,\n        \"yearBuilt\": 1995,\n        \"lotSize\": 8000\n      }\n    },\n    {\n      \"coordinates\": { \"lat\": 40.7600, \"lng\": -73.9800 },\n      \"propertyDetails\": {\n        \"type\": \"residential\",\n        \"size\": 1800,\n        \"bedrooms\": 2,\n        \"bathrooms\": 1,\n        \"yearBuilt\": 2000,\n        \"lotSize\": 6000\n      }\n    }\n  ],\n  \"investmentGoals\": {\n    \"type\": \"growth\",\n    \"targetReturn\": 8\n  },\n  \"riskTolerance\": \"medium\",\n  \"timeHorizon\": \"10years\",\n  \"userId\": \"test_user_123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/predict/investment-analysis",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"predict",
+								"investment-analysis"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test Workflows",
+			"item": [
+				{
+					"name": "Complete Property Analysis Workflow",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Set a test property location",
+									"pm.environment.set('testLat', '40.7530');",
+									"pm.environment.set('testLng', '-73.9850');"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Height estimation initiated\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Chain to next request after delay",
+									"setTimeout(function(){",
+									"    // This would be part of a workflow",
+									"}, 3000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coordinates\": {\n    \"lat\": {{testLat}},\n    \"lng\": {{testLng}},\n    \"radius\": 1000\n  },\n  \"userId\": \"workflow_test_user\",\n  \"analysisType\": \"buildings\",\n  \"resolution\": \"high\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/height/estimate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"height",
+								"estimate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Error Handling Test - Invalid Coordinates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message is present\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coordinates\": {},\n  \"userId\": \"test_user_123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/height/estimate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"height",
+								"estimate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Error Handling Test - Missing Property Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message mentions property details\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.error).to.include('Property details');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coordinates\": {\n    \"lat\": 40.7530,\n    \"lng\": -73.9850\n  },\n  \"userId\": \"test_user_123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/predict/value",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"predict",
+								"value"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set default baseUrl if not set",
+					"if (!pm.environment.get('baseUrl')) {",
+					"    pm.environment.set('baseUrl', 'http://localhost:8000');",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test to check response time",
+					"pm.test('Response time is less than 30 seconds', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(30000);",
+					"});",
+					"",
+					"// Global test for JSON response",
+					"pm.test('Response is JSON', function () {",
+					"    pm.response.to.be.json;",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "heightProcessingId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "imageryProcessingId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "predictionProcessingId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "batchId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "testLat",
+			"value": "40.7530",
+			"type": "string"
+		},
+		{
+			"key": "testLng",
+			"value": "-73.9850",
+			"type": "string"
+		}
+	]
+}

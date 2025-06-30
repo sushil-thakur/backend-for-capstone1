@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "satellite-imagery-api",
+		"name": "Satellite Imagery Fetch API",
+		"description": "Google Earth Engine satellite imagery fetch with async processing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Fetch RGB Satellite Imagery",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"coordinates\": {\n    \"bounds\": {\n      \"minLat\": 40.7489,\n      \"maxLat\": 40.7639,\n      \"minLng\": -73.9901,\n      \"maxLng\": -73.9751\n    }\n  },\n  \"imageType\": \"rgb\",\n  \"resolution\": \"medium\",\n  \"dateRange\": {\n    \"start\": \"2024-06-01\",\n    \"end\": \"2024-09-30\"\n  },\n  \"cloudCover\": 15,\n  \"userId\": \"imagery_user_001\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/imagery/fetch",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "imagery", "fetch"]
+				}
+			},
+			"response": [
+				{
+					"name": "Processing Started",
+					"status": "Accepted",
+					"code": 202,
+					"body": "{\n  \"message\": \"Satellite imagery fetch started\",\n  \"processingId\": \"imagery_1751234567890_ghi456\",\n  \"estimatedTime\": \"2-5 minutes\",\n  \"status\": \"processing\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Fetch Multispectral Imagery",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"coordinates\": {\n    \"bounds\": {\n      \"minLat\": 34.0522,\n      \"maxLat\": 34.0672,\n      \"minLng\": -118.2570,\n      \"maxLng\": -118.2420\n    }\n  },\n  \"imageType\": \"multispectral\",\n  \"resolution\": \"high\",\n  \"dateRange\": {\n    \"start\": \"2024-01-01\",\n    \"end\": \"2024-12-31\"\n  },\n  \"cloudCover\": 10,\n  \"userId\": \"gee_user_002\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/imagery/fetch",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "imagery", "fetch"]
+				}
+			}
+		},
+		{
+			"name": "Get Imagery Results",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/imagery/results/imagery_1751234567890_ghi456",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "imagery", "results", "imagery_1751234567890_ghi456"]
+				}
+			},
+			"response": [
+				{
+					"name": "Completed Results",
+					"status": "OK",
+					"code": 200,
+					"body": "{\n  \"processingId\": \"imagery_1751234567890_ghi456\",\n  \"status\": \"completed\",\n  \"timestamp\": \"2025-06-30T15:30:45.123Z\",\n  \"data\": {\n    \"images\": [\n      {\n        \"filename\": \"imagery_1751234567890_ghi456_img_1_rgb_medium.tif\",\n        \"url\": \"/uploads/imagery/imagery_1751234567890_ghi456_img_1_rgb_medium.tif\",\n        \"preview\": \"/uploads/imagery/imagery_1751234567890_ghi456_img_1_preview.jpg\",\n        \"metadata\": {\n          \"captureDate\": \"2024-08-15T14:22:33Z\",\n          \"satellite\": \"Landsat-8\",\n          \"cloudCover\": 8.5,\n          \"resolution\": \"30m\",\n          \"bands\": [\"Red\", \"Green\", \"Blue\"],\n          \"size\": {\n            \"width\": 1024,\n            \"height\": 1024,\n            \"fileSize\": \"2.4 MB\"\n          }\n        }\n      },\n      {\n        \"filename\": \"imagery_1751234567890_ghi456_img_2_rgb_medium.tif\",\n        \"url\": \"/uploads/imagery/imagery_1751234567890_ghi456_img_2_rgb_medium.tif\",\n        \"preview\": \"/uploads/imagery/imagery_1751234567890_ghi456_img_2_preview.jpg\",\n        \"metadata\": {\n          \"captureDate\": \"2024-09-10T13:45:12Z\",\n          \"satellite\": \"Sentinel-2\",\n          \"cloudCover\": 12.3,\n          \"resolution\": \"10m\",\n          \"bands\": [\"Red\", \"Green\", \"Blue\"],\n          \"size\": {\n            \"width\": 2048,\n            \"height\": 2048,\n            \"fileSize\": \"8.7 MB\"\n          }\n        }\n      }\n    ],\n    \"analysis\": {\n      \"totalImages\": 2,\n      \"dateRange\": {\n        \"earliest\": \"2024-08-15T14:22:33Z\",\n        \"latest\": \"2024-09-10T13:45:12Z\"\n      },\n      \"averageCloudCover\": 10.4,\n      \"coverageArea\": \"2.25 km²\",\n      \"qualityScore\": 8.7\n    },\n    \"coordinates\": {\n      \"bounds\": {\n        \"minLat\": 40.7489,\n        \"maxLat\": 40.7639,\n        \"minLng\": -73.9901,\n        \"maxLng\": -73.9751\n      },\n      \"center\": {\n        \"lat\": 40.7564,\n        \"lng\": -73.9826\n      }\n    }\n  }\n}"
+				},
+				{
+					"name": "Processing In Progress",
+					"status": "OK",
+					"code": 200,
+					"body": "{\n  \"processingId\": \"imagery_1751234567890_ghi456\",\n  \"status\": \"processing\",\n  \"timestamp\": \"2025-06-30T15:28:12.456Z\",\n  \"progress\": {\n    \"percentage\": 65,\n    \"currentStep\": \"Downloading satellite imagery\",\n    \"estimatedTimeRemaining\": \"90 seconds\"\n  }\n}"
+				},
+				{
+					"name": "Not Found",
+					"status": "Not Found",
+					"code": 404,
+					"body": "{\n  \"error\": \"Imagery processing result not found\",\n  \"processingId\": \"invalid_id\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Available Imagery Sources",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/imagery/sources",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "imagery", "sources"]
+				}
+			},
+			"response": [
+				{
+					"name": "Available Sources",
+					"status": "OK",
+					"code": 200,
+					"body": "{\n  \"sources\": [\n    {\n      \"name\": \"Landsat-8\",\n      \"type\": \"optical\",\n      \"resolution\": \"30m\",\n      \"bands\": [\n        \"Coastal Aerosol\",\n        \"Blue\",\n        \"Green\",\n        \"Red\",\n        \"Near Infrared\",\n        \"SWIR 1\",\n        \"SWIR 2\",\n        \"Panchromatic\",\n        \"Cirrus\",\n        \"Thermal Infrared 1\",\n        \"Thermal Infrared 2\"\n      ],\n      \"coverage\": \"Global\",\n      \"revisitTime\": \"16 days\",\n      \"availability\": \"2013-present\"\n    },\n    {\n      \"name\": \"Sentinel-2\",\n      \"type\": \"optical\",\n      \"resolution\": \"10m/20m/60m\",\n      \"bands\": [\n        \"Coastal Aerosol\",\n        \"Blue\",\n        \"Green\",\n        \"Red\",\n        \"Red Edge 1\",\n        \"Red Edge 2\",\n        \"Red Edge 3\",\n        \"NIR\",\n        \"Red Edge 4\",\n        \"Water Vapour\",\n        \"SWIR-Cirrus\",\n        \"SWIR 1\",\n        \"SWIR 2\"\n      ],\n      \"coverage\": \"Global (land)\",\n      \"revisitTime\": \"5 days\",\n      \"availability\": \"2015-present\"\n    },\n    {\n      \"name\": \"MODIS\",\n      \"type\": \"optical\",\n      \"resolution\": \"250m/500m/1000m\",\n      \"bands\": [\"36 spectral bands\"],\n      \"coverage\": \"Global\",\n      \"revisitTime\": \"1-2 days\",\n      \"availability\": \"2000-present\"\n    }\n  ],\n  \"totalSources\": 3,\n  \"lastUpdated\": \"2025-06-30T10:00:00Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Compare Imagery Over Time",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"coordinates\": {\n    \"bounds\": {\n      \"minLat\": -23.5505,\n      \"maxLat\": -23.5355,\n      \"minLng\": -46.6333,\n      \"maxLng\": -46.6183\n    }\n  },\n  \"beforeDate\": \"2020-01-01\",\n  \"afterDate\": \"2024-01-01\",\n  \"analysisType\": \"deforestation_detection\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/imagery/compare",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "imagery", "compare"]
+				}
+			},
+			"response": [
+				{
+					"name": "Comparison Results",
+					"status": "OK",
+					"code": 200,
+					"body": "{\n  \"comparison\": {\n    \"analysisType\": \"deforestation_detection\",\n    \"timespan\": {\n      \"beforeDate\": \"2020-01-01\",\n      \"afterDate\": \"2024-01-01\",\n      \"yearsDifference\": 4\n    },\n    \"results\": {\n      \"forestLoss\": {\n        \"area\": \"0.45 km²\",\n        \"percentage\": 12.3,\n        \"severity\": \"moderate\"\n      },\n      \"urbanExpansion\": {\n        \"area\": \"0.23 km²\",\n        \"percentage\": 6.1,\n        \"severity\": \"low\"\n      },\n      \"changeDetection\": {\n        \"totalChangedArea\": \"0.68 km²\",\n        \"changePercentage\": 18.4,\n        \"confidenceScore\": 0.87\n      }\n    },\n    \"images\": {\n      \"before\": {\n        \"date\": \"2020-02-15T13:45:30Z\",\n        \"satellite\": \"Landsat-8\",\n        \"cloudCover\": 5.2\n      },\n      \"after\": {\n        \"date\": \"2024-01-20T14:12:45Z\",\n        \"satellite\": \"Sentinel-2\",\n        \"cloudCover\": 8.7\n      },\n      \"difference\": {\n        \"url\": \"/uploads/analysis/change_detection_1751234567890.jpg\",\n        \"legend\": {\n          \"red\": \"Forest loss\",\n          \"blue\": \"Urban expansion\",\n          \"green\": \"No change\"\n        }\n      }\n    }\n  },\n  \"metadata\": {\n    \"processingTime\": 8945,\n    \"algorithm\": \"NDVI_threshold_analysis\",\n    \"resolution\": \"30m\"\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "Error - Area Too Large",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"coordinates\": {\n    \"bounds\": {\n      \"minLat\": 30.0,\n      \"maxLat\": 40.0,\n      \"minLng\": -120.0,\n      \"maxLng\": -110.0\n    }\n  },\n  \"imageType\": \"rgb\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/imagery/fetch",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "imagery", "fetch"]
+				}
+			},
+			"response": [
+				{
+					"name": "Area Too Large Error",
+					"status": "Bad Request",
+					"code": 400,
+					"body": "{\n  \"error\": \"Area too large. Maximum 10,000 km²\"\n}"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000"
+		}
+	]
+}

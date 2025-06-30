@@ -1,0 +1,97 @@
+{
+  "name": "Environmental Monitoring API",
+  "version": "1.0.0",
+  "description": "Backend API for satellite imagery analysis and real estate prediction",
+  "environment": {
+    "development": {
+      "database": {
+        "type": "mongodb",
+        "host": "localhost",
+        "port": 27017,
+        "name": "environmental_dev"
+      },
+      "server": {
+        "port": 8000,
+        "cors": {
+          "origins": ["http://localhost:3000", "http://localhost:3001"]
+        }
+      },
+      "logging": {
+        "level": "debug",
+        "console": true,
+        "file": true
+      }
+    },
+    "production": {
+      "database": {
+        "type": "mongodb_atlas",
+        "connection_string": "process.env.MONGODB_URI"
+      },
+      "server": {
+        "port": "process.env.PORT",
+        "cors": {
+          "origins": ["process.env.FRONTEND_URL"]
+        }
+      },
+      "logging": {
+        "level": "info",
+        "console": false,
+        "file": true
+      }
+    }
+  },
+  "features": {
+    "satellite_analysis": {
+      "enabled": true,
+      "providers": ["google_earth_engine", "sentinel", "landsat"],
+      "max_area_km2": 10000
+    },
+    "deforestation_detection": {
+      "enabled": true,
+      "algorithms": ["ndvi_change", "machine_learning"],
+      "alert_threshold": 5
+    },
+    "real_estate_prediction": {
+      "enabled": true,
+      "models": ["xgboost", "linear_regression"],
+      "features": ["environmental", "economic", "geographic"]
+    },
+    "alert_system": {
+      "enabled": true,
+      "channels": ["email", "telegram", "webhook"],
+      "telegram_bot": true
+    }
+  },
+  "api": {
+    "rate_limiting": {
+      "enabled": true,
+      "window_ms": 900000,
+      "max_requests": 100
+    },
+    "validation": {
+      "strict": true,
+      "sanitization": true
+    },
+    "security": {
+      "helmet": true,
+      "cors": true,
+      "mongo_sanitize": true
+    }
+  },
+  "file_processing": {
+    "max_file_size": "50mb",
+    "allowed_types": ["image/jpeg", "image/png", "image/tiff", "application/json"],
+    "upload_dir": "./uploads",
+    "temp_dir": "./temp"
+  },
+  "external_services": {
+    "google_earth_engine": {
+      "enabled": true,
+      "authentication": "service_account"
+    },
+    "telegram": {
+      "enabled": true,
+      "bot_token": "process.env.TELEGRAM_BOT_TOKEN"
+    }
+  }
+}

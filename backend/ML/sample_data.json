@@ -1,0 +1,70 @@
+{
+  "sample_input": {
+    "latitude": 47.5112,
+    "longitude": -122.257,
+    "bedrooms": 3,
+    "bathrooms": 2.25,
+    "sqft_living": 2570,
+    "sqft_lot": 7242,
+    "floors": 2,
+    "waterfront": 0,
+    "view": 0,
+    "condition": 3,
+    "grade": 7,
+    "yr_built": 1951,
+    "additionalFeatures": {
+      "sqft_above": 2570,
+      "sqft_basement": 0,
+      "yr_renovated": 0,
+      "zipcode": 98178,
+      "sqft_living15": 1340,
+      "sqft_lot15": 5650
+    }
+  },
+  "expected_output": {
+    "price": 450000.50,
+    "confidence": 0.876,
+    "growthPotential": "Medium",
+    "modelVersion": "USA_Real_Estate_XGBoost_v1.0",
+    "propertyDetails": {
+      "bedrooms": 3,
+      "bathrooms": 2.25,
+      "sqft_living": 2570,
+      "sqft_lot": 7242,
+      "condition": 3,
+      "grade": 7,
+      "yr_built": 1951
+    },
+    "location": {
+      "latitude": 47.5112,
+      "longitude": -122.257,
+      "pricePerSqft": 175.10
+    },
+    "marketAnalysis": {
+      "region": "Seattle Metro",
+      "trend": "Growing Market",
+      "avgPriceRange": "$400K - $900K",
+      "marketPosition": "Above Average"
+    }
+  },
+  "feature_mapping": {
+    "0": "latitude",
+    "1": "longitude", 
+    "2": "bedrooms",
+    "3": "bathrooms",
+    "4": "sqft_living",
+    "5": "sqft_lot",
+    "6": "floors",
+    "7": "waterfront",
+    "8": "view",
+    "9": "condition",
+    "10": "grade",
+    "11": "yr_built",
+    "12": "sqft_above",
+    "13": "sqft_basement",
+    "14": "yr_renovated",
+    "15": "zipcode",
+    "16": "sqft_living15",
+    "17": "sqft_lot15"
+  }
+}
